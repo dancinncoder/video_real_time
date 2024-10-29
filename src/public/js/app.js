@@ -14,8 +14,7 @@ function handleRoomSubmit(event) {
   // backSocekt.emit("event name", argument in object form, and string form, callback function). We can send any kind of event.
   backSocket.emit(
     "enter_room",
-    input.value,
-    backendDone
+    input.value
     // For the security risk, backend should not excecute the code from the front-end.
   );
   input.value = "";

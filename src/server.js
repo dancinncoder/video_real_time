@@ -21,11 +21,19 @@ const SocketIoServer = SocketIO(httpServer);
 
 // Receive connection
 SocketIoServer.on("connection", (socket) => {
-  socket.on("enter_room", (roomName, done) => {
-    console.log(roomName);
-    setTimeout(() => {
-      done("hello from the backend");
-    }, 10000);
+  // Middleware
+  socket.onAny((event) => {
+    console.log(`Socket Event Middleware:${event}`);
+  });
+
+  socket.on("enter_room", (roomName) => {
+    console.log("room name:", roomName);
+    console.log("socket ID:", socket.id);
+
+    // Room is automatically generated, so socket.join is to Enter the room
+    console.log("room info:", socket.rooms);
+    socket.join(roomName);
+    console.log("room info:", socket.rooms);
   });
 });
 
