@@ -84,3 +84,18 @@ backSocket.on("byeMessage", (user) => {
 
 //Receive new message
 backSocket.on("new_message", addMessage);
+
+//Send notice message to all
+backSocket.on("room_change", (rooms) => {
+  // if there is no any room
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = "";
+  if (rooms.length === 0) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.append(li);
+  });
+});

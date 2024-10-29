@@ -19,6 +19,24 @@ const httpServer = http.createServer(app);
 // pass server, but its optional thing to do
 const SocketIoServer = SocketIO(httpServer);
 
+function publicRooms() {
+  const {
+    sockets: {
+      adapter: { sids, rooms },
+    },
+  } = SocketIoServer;
+
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+  // const sids = SocketIoServer.sockets.adapter.sids;
+  // const rooms = SocketIoServer.sockets.adapter.rooms;
+}
+
 // Receive connection
 SocketIoServer.on("connection", (socket) => {
   socket["nickname"] = "Anonymous";
@@ -42,11 +60,20 @@ SocketIoServer.on("connection", (socket) => {
     // Send a message to everyone in the room
     socket.to(roomName).emit("welcomeMessage", socket.nickname);
 
+    // Send a notice message to everyone in the server
+    SocketIoServer.sockets.emit("room_change", publicRooms());
+
     // Disconnecting
     socket.on("disconnecting", () => {
       socket.rooms.forEach((room) =>
         socket.to(room).emit("byeMessage", socket.nickname)
       );
+    });
+
+    // Disconnect
+    socket.on("disconnect", () => {
+      // Send a notice message to everyone in the server
+      SocketIoServer.sockets.emit("room_change", publicRooms());
     });
 
     // New message send
