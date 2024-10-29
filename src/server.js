@@ -21,6 +21,8 @@ const SocketIoServer = SocketIO(httpServer);
 
 // Receive connection
 SocketIoServer.on("connection", (socket) => {
+  socket["nickname"] = "Anonymous";
+
   // Middleware
   socket.onAny((event) => {
     console.log(`Socket Event Middleware:${event}`);
@@ -32,18 +34,25 @@ SocketIoServer.on("connection", (socket) => {
     showRoom();
 
     // Send a message to everyone in the room
-    socket.to(roomName).emit("welcomeMessage");
+    socket.to(roomName).emit("welcomeMessage", socket.nickname);
 
     // Disconnecting
     socket.on("disconnecting", () => {
-      socket.rooms.forEach((room) => socket.to(room).emit("byeMessage"));
+      socket.rooms.forEach((room) =>
+        socket.to(room).emit("byeMessage", socket.nickanme)
+      );
     });
 
     // New message send
     socket.on("new_message", (message, roomName, addMessage) => {
       // To which room to send the message?
-      socket.to(roomName).emit("new_message", message);
+      socket.to(roomName).emit("new_message", `${socket.nickanme}: ${message}`);
       addMessage();
+    });
+
+    // Nickname
+    socket.on("nickname", (nickname) => {
+      socket["nickanme"] = nickname;
     });
   });
 });
