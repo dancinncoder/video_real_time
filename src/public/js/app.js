@@ -1,54 +1,24 @@
-const messageList = document.querySelector("ul");
-const nicknameForm = document.querySelector("#nickname");
-const messageForm = document.querySelector("#message");
+// io is a function that connects backend to socketio automatically
+const backSocket = io();
 
-function makeMessage(type, payload) {
-  const message = { type, payload };
-  return JSON.stringify(message);
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
+
+function backendDone(message) {
+  console.log(`the backend says ${message}`);
 }
 
-const backSocket = new WebSocket(`ws://${window.location.host}`);
-
-//receive message(=event)
-
-function handleEventOpen() {
-  console.log("Connceted to Server.");
-}
-
-function handleEventMessage(message) {
-  console.log("New message : ", message.data);
-  const li = document.createElement("li");
-  li.innerText = message.data;
-  messageList.append(li);
-}
-
-function handleEventClose() {
-  console.log("Disconnected from the server.");
-}
-
-function handleSubmit(event) {
+function handleRoomSubmit(event) {
   event.preventDefault();
-  const input = messageForm.querySelector("input");
-  backSocket.send(makeMessage("new_message", input.value));
+  const input = form.querySelector("input");
+  // backSocekt.emit("event name", argument in object form, and string form, callback function). We can send any kind of event.
+  backSocket.emit(
+    "enter_room",
+    input.value,
+    backendDone
+    // For the security risk, backend should not excecute the code from the front-end.
+  );
   input.value = "";
 }
 
-function handleNicknameSubmit(event) {
-  event.preventDefault();
-  const input = nicknameForm.querySelector("input");
-  backSocket.send(makeMessage("nickname", input.value));
-  input.value = "";
-}
-
-backSocket.addEventListener("open", handleEventOpen);
-
-backSocket.addEventListener("message", handleEventMessage);
-
-backSocket.addEventListener("close", handleEventClose);
-
-// setTimeout(() => {
-//   backSocket.send("hello from the browser");
-// }, 5000);
-
-messageForm.addEventListener("submit", handleSubmit);
-nicknameForm.addEventListener("submit", handleNicknameSubmit);
+form.addEventListener("submit", handleRoomSubmit);
