@@ -26,14 +26,25 @@ SocketIoServer.on("connection", (socket) => {
     console.log(`Socket Event Middleware:${event}`);
   });
 
-  socket.on("enter_room", (roomName) => {
-    console.log("room name:", roomName);
-    console.log("socket ID:", socket.id);
-
+  socket.on("enter_room", (roomName, showRoom) => {
     // Room is automatically generated, so socket.join is to Enter the room
-    console.log("room info:", socket.rooms);
     socket.join(roomName);
-    console.log("room info:", socket.rooms);
+    showRoom();
+
+    // Send a message to everyone in the room
+    socket.to(roomName).emit("welcomeMessage");
+
+    // Disconnecting
+    socket.on("disconnecting", () => {
+      socket.rooms.forEach((room) => socket.to(room).emit("byeMessage"));
+    });
+
+    // New message send
+    socket.on("new_message", (message, roomName, addMessage) => {
+      // To which room to send the message?
+      socket.to(roomName).emit("new_message", message);
+      addMessage();
+    });
   });
 });
 
