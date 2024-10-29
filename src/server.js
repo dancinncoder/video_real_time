@@ -37,6 +37,10 @@ function publicRooms() {
   // const rooms = SocketIoServer.sockets.adapter.rooms;
 }
 
+function countUsersInTheRoom(roomName) {
+  return SocketIoServer.sockets.adapter.rooms.get(roomName)?.size;
+}
+
 // Receive connection
 SocketIoServer.on("connection", (socket) => {
   socket["nickname"] = "Anonymous";
@@ -58,7 +62,9 @@ SocketIoServer.on("connection", (socket) => {
     showRoom();
 
     // Send a message to everyone in the room
-    socket.to(roomName).emit("welcomeMessage", socket.nickname);
+    socket
+      .to(roomName)
+      .emit("welcomeMessage", socket.nickname, countUsersInTheRoom(roomName));
 
     // Send a notice message to everyone in the server
     SocketIoServer.sockets.emit("room_change", publicRooms());
@@ -66,7 +72,13 @@ SocketIoServer.on("connection", (socket) => {
     // Disconnecting
     socket.on("disconnecting", () => {
       socket.rooms.forEach((room) =>
-        socket.to(room).emit("byeMessage", socket.nickname)
+        socket
+          .to(room)
+          .emit(
+            "byeMessage",
+            socket.nickname,
+            countUsersInTheRoom(roomName) - 1
+          )
       );
     });
 

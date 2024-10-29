@@ -74,11 +74,15 @@ function handleRoomSubmit(event) {
 nicknameForm.addEventListener("submit", handleNicknameSubmit);
 form.addEventListener("submit", handleRoomSubmit);
 
-backSocket.on("welcomeMessage", (user) => {
+backSocket.on("welcomeMessage", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`${user} joined!`);
 });
 
-backSocket.on("byeMessage", (user) => {
+backSocket.on("byeMessage", (user, newCount) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room ${roomName} (${newCount})`;
   addMessage(`${user} left.`);
 });
 
