@@ -28,6 +28,12 @@ SocketIoServer.on("connection", (socket) => {
     console.log(`Socket Event Middleware:${event}`);
   });
 
+  // Nickname
+  socket.on("nickname", (nickname, showRoomForm) => {
+    socket["nickname"] = nickname;
+    showRoomForm();
+  });
+
   socket.on("enter_room", (roomName, showRoom) => {
     // Room is automatically generated, so socket.join is to Enter the room
     socket.join(roomName);
@@ -39,20 +45,18 @@ SocketIoServer.on("connection", (socket) => {
     // Disconnecting
     socket.on("disconnecting", () => {
       socket.rooms.forEach((room) =>
-        socket.to(room).emit("byeMessage", socket.nickanme)
+        socket.to(room).emit("byeMessage", socket.nickname)
       );
     });
 
     // New message send
     socket.on("new_message", (message, roomName, addMessage) => {
       // To which room to send the message?
-      socket.to(roomName).emit("new_message", `${socket.nickanme}: ${message}`);
+      console.log("socket name:", socket["nickname"]);
+      socket
+        .to(roomName)
+        .emit("new_message", `${socket["nickname"]}: ${message}`);
       addMessage();
-    });
-
-    // Nickname
-    socket.on("nickname", (nickname) => {
-      socket["nickanme"] = nickname;
     });
   });
 });
