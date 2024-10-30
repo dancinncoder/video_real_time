@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Noom</title><link rel="stylesheet" href="https://unpkg.com/mvp.css"></head></html><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Noom</title><link rel="stylesheet" href="https://unpkg.com/mvp.css"><style>body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+main {
+  padding: 20px;
+}
+
+header {
+  padding: 50px 10px 20px;
+}
+
+#setup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+}
+
+#room {
+  padding: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  width: 100%;
+}
+
+h1 {
+  margin: 0;
+  text-align: center;
+}
+
+h3 {
+  text-align: center;
+  background-color: #e7f3fb;
+  border-radius: 7px;
+  padding: 5px;
+  margin: 0;
+}
+
+ul {
+  padding: 10px;
+}
+
+li {
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+#exitbtn {
+  margin: 20px 0;
+  height: 55px;
+  background-color: #C70039;
+  border: none;
+}
+</style></head><body> <header><h1>Noom</h1><p>A real-time chat service</p></header><main><div id="setup"> <form id="name"><input placeholder="Nickname" required type="text"><button>Next</button></form></div><div id="welcome"> <form><h4>Available Rooms</h4><ul id="openedRooms"> </ul><input placeholder="New Room Name" required type="text"><button>Enter Room</button></form></div><div id="room"> <h3></h3><ul></ul><form id="message"><input placeholder="Message" required type="text"><button>Send</button></form><button id="exitbtn" onclick="window.location.href='/'">Exit</button></div></main><script src="/socket.io/socket.io.js"></script><script src="/public/js/app.js"></script></body></html>
