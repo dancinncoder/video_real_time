@@ -83,7 +83,7 @@ html(lang="en")
   body 
     header
       h1 Noom
-      p A real-time video chat
+      p A real-time chat service
     main
       div#setup 
         form#name
@@ -91,11 +91,11 @@ html(lang="en")
           button Next
       div#welcome 
         form
-          input(placeholder="Room Name", required, type="text")
+          h4 Available Rooms
+          ul#openedRooms 
+          input(placeholder="New Room Name", required, type="text")
           button Enter Room
-        h4 Available Rooms: 
-        ul 
-          
+
       div#room 
         h3
         ul

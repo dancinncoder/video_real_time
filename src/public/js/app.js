@@ -6,11 +6,16 @@ const setup = document.getElementById("setup");
 const form = welcome.querySelector("form");
 const nicknameForm = setup.querySelector("#name");
 const room = document.getElementById("room");
+const openRooms = welcome.querySelector("#openedRooms");
 
 room.hidden = true;
 welcome.hidden = true;
 
 let roomName;
+
+function handleAutoFillRoomName(room) {
+  console.log("room:", room);
+}
 
 function showRoomForm() {
   nicknameForm.hidden = true;
@@ -73,6 +78,7 @@ function handleRoomSubmit(event) {
 
 nicknameForm.addEventListener("submit", handleNicknameSubmit);
 form.addEventListener("submit", handleRoomSubmit);
+openRooms.addEventListener("submit", handleAutoFillRoomName(room));
 
 backSocket.on("welcomeMessage", (user, newCount) => {
   const h3 = room.querySelector("h3");
@@ -98,8 +104,8 @@ backSocket.on("room_change", (rooms) => {
     return;
   }
   rooms.forEach((room) => {
-    const li = document.createElement("li");
-    li.innerText = room;
-    roomList.append(li);
+    const button = document.createElement("button");
+    button.innerText = room;
+    roomList.append(button);
   });
 });
